@@ -38,7 +38,7 @@ Add the connection linked to the Notion API key created on step 2.
 
 ### 4. Set your book notes in a folder called `notes`
 
-Export your notes in Vivlio and past the generated `html` files to your `notes` folder.
+Export your notes in Vivlio and paste the generated `html` files to your `notes` folder.
 
 ### 5. Run code
 
