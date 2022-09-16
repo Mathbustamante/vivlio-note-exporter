@@ -3,6 +3,7 @@
 */
 
 const fs = require('fs');
+const path = require('path');
 const jsdom = require("jsdom");
 const dotenv = require("dotenv")
 
@@ -29,28 +30,30 @@ async function getBookNotes() {
     const files = fs.readdirSync('./notes')
     const bookNotes = [];
     for (const book of files) {
-      const data = fs.readFileSync(`./notes/${book}`, 'utf8');
-      const dom = new JSDOM(data);
-
-      const currentBook = {};
-      currentBook.title = (dom.window.document.querySelector("h1").textContent).slice(22);
-      currentBook.author = dom.window.document.querySelector("span").textContent;
-      currentBook.notes = [];
-      dom.window.document.querySelectorAll(".bm-text").forEach(function (data) {
-        currentBook.notes.push({
-          object: "block",
-          type: "paragraph",
-          paragraph: {
-            rich_text: [{
-              type: "text",
-              text: {
-                content: `${data.parentNode.querySelector('.bm-page').textContent} - ${data.querySelector('.bm-text > *').textContent}`
-              }
-            }]
-          }
+      if (path.extname(book) === ".html") {
+        const data = fs.readFileSync(`./notes/${book}`, 'utf8');
+        const dom = new JSDOM(data);
+        const currentBook = {};
+        currentBook.notes = [];
+        currentBook.title = (dom.window.document.querySelector("h1").textContent).slice(22);
+        currentBook.author = dom.window.document.querySelector("span") ?
+        dom.window.document.querySelector("span").textContent.textContent : "";
+        dom.window.document.querySelectorAll(".bm-text").forEach(function (data) {
+          currentBook.notes.push({
+            object: "block",
+            type: "paragraph",
+            paragraph: {
+              rich_text: [{
+                type: "text",
+                text: {
+                  content: `${data.parentNode.querySelector('.bm-page').textContent} - ${data.querySelector('.bm-text > *').textContent}`
+                }
+              }]
+            }
+          });
         });
-      });
-      bookNotes.push(currentBook);
+        bookNotes.push(currentBook);
+      }
     }
     return bookNotes;
   } catch (error) {
@@ -62,7 +65,7 @@ async function getBookNotes() {
 /**
  * Gets a random book emoji
  */
- const getRandomEmoji = () => {
+const getRandomEmoji = () => {
   const bookEmojis = ['📔', '📕', '📖', '📗', '📘', '📙', '📚', '📓', '📒']
   return bookEmojis[Math.floor((Math.random() * bookEmojis.length))]
 }
