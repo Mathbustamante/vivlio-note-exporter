@@ -37,7 +37,7 @@ async function getBookNotes() {
         currentBook.notes = [];
         currentBook.title = (dom.window.document.querySelector("h1").textContent).slice(22);
         currentBook.author = dom.window.document.querySelector("span") ?
-        dom.window.document.querySelector("span").textContent.textContent : "";
+        dom.window.document.querySelector("span").textContent : "";
         dom.window.document.querySelectorAll(".bm-text").forEach(function (data) {
           currentBook.notes.push({
             object: "block",
@@ -46,7 +46,7 @@ async function getBookNotes() {
               rich_text: [{
                 type: "text",
                 text: {
-                  content: `${data.parentNode.querySelector('.bm-page').textContent} - ${data.querySelector('.bm-text > *').textContent}`
+                  content: `Page ${data.parentNode.querySelector('.bm-page').textContent} - ${data.querySelector('.bm-text > *').textContent}`
                 }
               }]
             }
